@@ -1,0 +1,6 @@
+{
+  "rust-client.disableRustup": true,
+  "[rust]": {
+    "editor.formatOnSave": true
+  }
+}
