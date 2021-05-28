@@ -28,9 +28,14 @@ impl Error for MinigrepError {}
 
 pub fn run_query(conf: &Config) -> Result<(), Box<dyn Error>> {
     let fc = fs::read_to_string(&conf.filename)?;
+    let r = search(&conf.query, &fc);
 
-    for s in search(&conf.query, &fc) {
-        println!("{}", s);
+    if r.len() == 0 {
+        println!("No results found");
+    } else {
+        for s in r {
+            println!("{}", s);
+        }
     }
 
     Ok(())
@@ -62,7 +67,7 @@ fn search<'a>(query: &str, text: &'a str) -> Vec<&'a str> {
 }
 
 #[cfg(test)]
-mod testies {
+mod tests {
     use super::*;
 
     #[test]
