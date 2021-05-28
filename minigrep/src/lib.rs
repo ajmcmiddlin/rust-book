@@ -27,8 +27,7 @@ impl fmt::Display for MinigrepError {
 impl Error for MinigrepError {}
 
 pub fn run_query(conf: &Config) -> Result<String, Box<dyn Error>> {
-    let fc = fs::read_to_string(&conf.filename)
-        .expect(&format!("Unable to read file {}", conf.filename));
+    let fc = fs::read_to_string(&conf.filename)?;
 
     Err(Box::new(NotImplemented))
 }
