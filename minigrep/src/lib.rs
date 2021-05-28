@@ -26,10 +26,14 @@ impl fmt::Display for MinigrepError {
 
 impl Error for MinigrepError {}
 
-pub fn run_query(conf: &Config) -> Result<String, Box<dyn Error>> {
+pub fn run_query(conf: &Config) -> Result<(), Box<dyn Error>> {
     let fc = fs::read_to_string(&conf.filename)?;
 
-    Err(Box::new(NotImplemented))
+    for s in search(&conf.query, &fc) {
+        println!("{}", s);
+    }
+
+    Ok(())
 }
 
 pub fn parse_config(args: &Vec<String>) -> Result<Config, Box<dyn Error>> {
@@ -42,5 +46,32 @@ pub fn parse_config(args: &Vec<String>) -> Result<Config, Box<dyn Error>> {
             filename: f.to_string(),
         }),
         _ => Err(Box::new(ArgCount(args.len() - 1))),
+    }
+}
+
+fn search<'a>(query: &str, text: &'a str) -> Vec<&'a str> {
+    let mut r = Vec::new();
+
+    for l in text.lines() {
+        if l.contains(&query) {
+            r.push(l);
+        }
+    }
+
+    r
+}
+
+#[cfg(test)]
+mod testies {
+    use super::*;
+
+    #[test]
+    fn basic_search() {
+        let query = "duct";
+        let text = "\
+Rust is a very
+productive language to work
+in apparently.";
+        assert_eq!(vec!["productive language to work"], search(query, text));
     }
 }
