@@ -55,15 +55,7 @@ pub fn parse_config(args: &Vec<String>) -> Result<Config, Box<dyn Error>> {
 }
 
 fn search<'a>(query: &str, text: &'a str) -> Vec<&'a str> {
-    let mut r = Vec::new();
-
-    for l in text.lines() {
-        if l.contains(&query) {
-            r.push(l);
-        }
-    }
-
-    r
+    text.lines().filter(|l| l.contains(&query)).collect()
 }
 
 #[cfg(test)]
