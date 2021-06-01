@@ -1,3 +1,4 @@
+use std::env;
 use std::error::Error;
 use std::fmt;
 use std::fs;
@@ -41,14 +42,17 @@ pub fn run_query(conf: &Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn parse_config(args: &Vec<String>) -> Result<Config, Box<dyn Error>> {
-    let qm = args.get(1);
-    let fm = args.get(2);
+pub fn parse_config(mut args: env::Args) -> Result<Config, Box<dyn Error>> {
+    // Skip the program name
+    args.next();
+
+    let qm = args.next();
+    let fm = args.next();
 
     match (qm, fm) {
         (Some(q), Some(f)) => Ok(Config {
-            query: q.to_string(),
-            filename: f.to_string(),
+            query: q,
+            filename: f,
         }),
         _ => Err(Box::new(ArgCount(args.len() - 1))),
     }
